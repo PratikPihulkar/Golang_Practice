@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 )
 
@@ -13,14 +14,33 @@ exists. [Array & Loop & Regex, 8-12 hours]
 */
 
 func checkPatternMatchedValue(candidateContainer map[string]bool, pattern string) {
+	regex, err := regexp.Compile(pattern)
+	if err != nil {
+		fmt.Println("Invalid regex pattern:", err)
+		return
+	}
 
+	fmt.Println("\nNames matching the pattern:")
+	found := false
+	for name := range candidateContainer {
+		if regex.MatchString(name) {
+			fmt.Println("->", name)
+			found = true
+		}
+	}
+
+	if !found {
+		fmt.Println("No matches found.")
+	}
 }
+
 func main() {
 
 	//declear a map
 	candidateContainer := make(map[string]bool)
 	var input string
 	var pattern string
+
 	fmt.Println("Enter names of candidate or enter 'done':")
 
 	for {
@@ -29,8 +49,9 @@ func main() {
 		if strings.ToLower(input) == "done" {
 			break
 		}
-
-		candidateContainer[input] = true
+		if input != "" {
+			candidateContainer[input] = true
+		}
 	}
 
 	fmt.Println("Enter search pattern: ")
